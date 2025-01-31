@@ -4,8 +4,6 @@ import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
-import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -15,19 +13,19 @@ import static org.hamcrest.Matchers.*;
 @Epic("GameController API Testing")
 @Feature("Game API")
 @ExtendWith(AllureJunit5.class)
-public class GameControllerAPI extends TestBase{
+public class GameControllerApiTest extends TestBase{
     private String baseUrl;
     private String payload;
     private String  id;
 
-    public GameControllerAPI(){
+    public GameControllerApiTest(){
         propertyReader config = propertyReader.getInstance();
         this.baseUrl = config.getValue("base_url_game_controller");
         this.payload = config.getValue("game_controller_payload");
         this.id = config.getValue("path_attribute_id");
     }
 
-    @Description("given the games controller ; api-video-games-controller")
+    @Description("Validate code status is 200 and content type is JSON")
     @Test
     public void ValidateCodeStateAndExpectedcontent(){
         given().
@@ -38,7 +36,7 @@ public class GameControllerAPI extends TestBase{
                 then().
                 spec(responseSpec);
     }
-    @Description("given the games controller ; api-video-games-controller")
+    @Description("Validate API returns list of objects and their values")
     @Test
     public void ValidateResponseAllValue(){
         given().
@@ -55,7 +53,7 @@ public class GameControllerAPI extends TestBase{
                 body("[0].rating", equalTo("Universal"));
     }
 
-    @Description("given the games controller ; api-video-games-controller")
+    @Description("Fetch a specific resource and validate some values")
     @Test
     public void ValidateResponseSpecificValue(){
         given().
@@ -69,9 +67,9 @@ public class GameControllerAPI extends TestBase{
                 body("name", equalTo("SimCity 2000"));
     }
 
-    @Description("Security Check for [Read Only]Post a Game; api-video-games-controller")
+    @Description("The API is read only , so validating this permission")
     @Test
-    public void SecurityCheckNoWriteRight(){
+    public void SecurityCheckNoWritePermission(){
         given().
                 filter(new RequestLoggingFilter()).
                 filter(new ResponseLoggingFilter()).
@@ -88,7 +86,7 @@ public class GameControllerAPI extends TestBase{
     }
 
 
-    @Description(" Security Check Validate size of Bod | given the games controller ; api-video-games-controller")
+    @Description(" Security Check Validate size of Bod | given the games controller ")
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void SecurityCheckSizeOfBodyReturn(){

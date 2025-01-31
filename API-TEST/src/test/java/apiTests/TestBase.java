@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeAll;
 
 public class TestBase {
     protected static ResponseSpecification responseSpec;
+    protected static ResponseSpecification responseSpecXML;
+
 
     @BeforeAll
     public static void setup() {
@@ -19,6 +21,8 @@ public class TestBase {
         responseSpec = new ResponseSpecBuilder()
                 .expectStatusCode(200)
                 .expectContentType(ContentType.JSON)
+                .build();
+        responseSpecXML = new ResponseSpecBuilder().expectStatusCode(200).expectContentType(ContentType.XML)
                 .build();
     }
 }

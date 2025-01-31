@@ -4,7 +4,6 @@ import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
-import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.hamcrest.Matchers.aMapWithSize;
@@ -17,12 +16,12 @@ import static org.hamcrest.Matchers.*;
 @Feature("Athentication API")
 @ExtendWith(AllureJunit5.class)
 
-public class AthenticationControllerAPI  extends TestBase{
+public class AthenticationControllerApiTest extends TestBase{
     private String baseUrl;
     private String username;
     private String password;
 
-    public AthenticationControllerAPI(){
+    public AthenticationControllerApiTest(){
         propertyReader config = propertyReader.getInstance();
         this.baseUrl = config.getValue("base_url_authentication_controller");
         this.username = config.getValue("authentication_controller_username");
@@ -30,10 +29,9 @@ public class AthenticationControllerAPI  extends TestBase{
 
     }
     @Test
-    @Description("api-authentication-controller\n" +
-            "Api Authentication Controller")
+    @Description("We expected a JSON content")
     @AllureId("001")  // Optional unique test case ID
-    public void ValidateCodeStateExpectedcontent(){
+    public void ValidateStatusCodeExpectedcontentJson(){
         given().
                 filter(new RequestLoggingFilter()).
                 filter(new ResponseLoggingFilter()).
@@ -44,6 +42,7 @@ public class AthenticationControllerAPI  extends TestBase{
                 contentType(ContentType.JSON);
     }
     @Test
+    @Description("We expect a code 200 as the Payload is correct")
     public void ValidateCodeStateWithPayload(){
         // Build the request body
         String requestBody = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
@@ -62,6 +61,7 @@ public class AthenticationControllerAPI  extends TestBase{
     }
 
     @Test
+    @Description("We expect 400 as the Payload is wrong")
     public void ValidateFailedCodeStateWithWrongPayload(){
         // Build the request body
         String requestBody = "{\"username\":\"" + username + "\", \"password\":\"" + "well" + "\"}";
@@ -79,6 +79,8 @@ public class AthenticationControllerAPI  extends TestBase{
 
     }
 @Test
+@Description("We expect a code 403 with no payload")
+
     public void ValidateFailedCodeStateWithNoPayload(){
         // Build the request body
         String requestBody = "{\"username\":\"" + "" + "\", \"password\":\"" + "" + "\"}";
@@ -96,7 +98,8 @@ public class AthenticationControllerAPI  extends TestBase{
 
     }
     @Test
-    public void ValidateTokenValueEqualString(){
+    @Description("We expect the body value for Token:string")
+    public void ValidateTokenBodyValueEqualString(){
         // Build the request body
         String requestBody = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
 
@@ -115,7 +118,7 @@ public class AthenticationControllerAPI  extends TestBase{
                 body("token", equalTo("string"));
 
     }
-    @Description("Security Check [Size] and No nul token Value Returned")
+    @Description("Security Check [Size] and No nul token Value is Returned")
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void SecurityCheckSizeAndNotNullValueReturn(){
