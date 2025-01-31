@@ -7,6 +7,8 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.hamcrest.Matchers.aMapWithSize;
+
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -93,7 +95,47 @@ public class AthenticationControllerAPI  extends TestBase{
                 statusCode(403);
 
     }
+    @Test
+    public void ValidateTokenValueEqualString(){
+        // Build the request body
+        String requestBody = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
 
+
+        given().
+                contentType(ContentType.JSON).
+                body(requestBody).
+                filter(new RequestLoggingFilter()).
+                filter(new ResponseLoggingFilter()).
+                when().
+                post(baseUrl).
+                then().
+                spec(responseSpec).
+                and().
+                assertThat().
+                body("token", equalTo("string"));
+
+    }
+    @Description("Security Check [Size] and No nul token Value Returned")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test
+    public void SecurityCheckSizeAndNotNullValueReturn(){
+        String requestBody = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+
+
+        given().
+                contentType(ContentType.JSON).
+                body(requestBody).
+                filter(new RequestLoggingFilter()).
+                filter(new ResponseLoggingFilter()).
+                when().
+                post(baseUrl).
+                then().
+                spec(responseSpec).
+                and().
+                assertThat().
+                body("$", aMapWithSize(1)).
+                body("token",notNullValue());
+    }
 
 
 }
